@@ -9,7 +9,7 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+Unofficial guide to getting a Computer Science internship in the US as a college student. 
 
 ---
 
@@ -20,18 +20,24 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 |  ASU CS Wiki| Landing an Internship|https://wiki.thesoda.io/guides/internships |
+| 2 |  Cassidy Williams|Getting a Gig | https://github.com/cassidoo/getting-a-gig|
+| 3 | | So You Want an Internship| https://github.com/codebytere/so-you-want-an-internship |
+| 4 |Sam Wincott |Internship Guide |https://github.com/samwincott/Internship-Guide |
+| 5 |  Workat.tech| Get a Software Engineering Job/Internship|https://github.com/workattech/get-a-software-engineering-job |
+| 6 |SimplifyJobs |Summer 2026 Internships |https://github.com/SimplifyJobs/Summer2026-Internships |
+| 7 |  Reddit r/csMajors| Timeline for Internships|  https://www.reddit.com/r/csMajors/comments/120o40i|
+| 8 | Reddit r/csMajors| Technical Interview advice| https://www.reddit.com/r/csMajors/comments/13op7uu|
+| 9 |  Reddit r/csMajors|Advice for applying to internships with 0 experience? |https://www.reddit.com/r/csMajors/comments/18rlm5g |
+| 10 |  Reddit r/csMajors| Cold apply quick or apply with referrals later| https://www.reddit.com/r/csMajors/comments/1n27jdp|
 
 ---
+
+## Summary of my Domain
+
+My main aim for this project is to focus on unofficial advice on getting a Computer Science internship in the US as a college student. The knowledge is hard to find in official career center pages because students often share the most practical details, such as application timing, referral strategy, online assessments, resume advice, and how many applications it may take, across scattered Reddit threads, blog posts, and peer guides.
+
+
 
 ## Chunking Strategy
 
