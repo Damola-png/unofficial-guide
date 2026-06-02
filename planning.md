@@ -9,7 +9,7 @@
 
 ## Domain
 
-Unofficial guide to getting a Computer Science internship in the US as a college student. 
+Unofficial guide to getting a Computer Science internship in the US as a college student. This knowledge is extremly useful because studnets share practical advise that could help other peers land high paying computer science internship which is something that a lot of science students are constantly trying to get. 
 
 ---
 
@@ -47,11 +47,11 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
 **Chunk size:**
-
+For  the chunk size, my plan is to split it around 800 - 1000 characters per chunk. 
 **Overlap:**
-
+150- 200 overalp size
 **Reasoning:**
-
+A lot of my documents are opinion based, so it would make sense to break them in large chunks to keep some of its content reasonably affective. 
 ---
 
 ## Retrieval Approach
@@ -64,11 +64,12 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
 
 **Embedding model:**
 
+all-MiniLM-L6-v2
+
 **Top-k:**
-
+Retrive the tope 5-10 chunks 
 **Production tradeoff reflection:**
-
----
+I would say accuarcy may be the best tradeoff becasue better model may have better accurcay but, it would cost more and take longer time or might even require a paid API calll to be able to work completely well. 
 
 ## Evaluation Plan
 
@@ -79,11 +80,11 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 | When should students start applying for CS internships?| Students often recommend applying early, commonly during late summer or fall before the internship year|
+| 2 | What should a CS internship resume include? |Projects, technical skills, relevant coursework, previous experience if available, and measurable impact|
+| 3 | Do referrals help compared to cold applications?| Referrals may help get attention, but students still recommend applying broadly and quickly|
+| 4 |  What should students prepare for online assessments?|Data structures, algorithms, LeetCode-style questions, time management, and practice with coding platforms|
+| 5 | What advice do students give for behavioral interviews?| Prepare clear stories using a structure like STAR, explain teamwork/conflict examples, and avoid sounding overly scripted|
 
 ---
 
@@ -93,9 +94,9 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. The biggest issue I could have is if one of the reddit sources have an outdated advice and the users end up using an advice that might not work anymore. 
 
-2.
+2. The system may give general advice and not give one specific to the kind of internship (Computer Science) that the user has asked for.
 
 ---
 
@@ -109,13 +110,35 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
 
 ---
 
+
+![alt text](image.png)
+
 ## AI Tool Plan
 
 <!-- For each part of the pipeline below, describe:
      - Which AI tool you plan to use (Claude, Copilot, ChatGPT, etc.)
+
+     I plan on using a mixture of Claude and copilot. I will mainly use Claude for larger design and implementataion prompts, and copilot for smaller in-editor suggestions and editting my code. 
+
      - What you'll give it as input (which sections of this planning.md, which requirements)
+
+     The Documents section of this planning.md
+     The project requirement that the pipeline must load raw documents, clean/preprocess them, and produce structured text
+     A description of my source types: GitHub guides, Reddit threads, and manually saved text files
+
      - What you expect it to produce
+
+     A Python script or functions that load documents from a local data folder
+     Basic cleaning logic to remove extra whitespace, HTML artifacts, navigation text, and repeated boilerplate
+     Metadata for each document, including source title and file path or URL
+
      - How you'll verify the output matches your spec
+
+     I will print several cleaned documents and compare them to the raw source text
+     I will check that the text still contains the useful internship advice
+     I will confirm that source metadata is preserved for every document
+
+
 
      "I'll use AI to help me code" is not a plan.
      "I'll give Claude my Chunking Strategy section and ask it to implement chunk_text()
