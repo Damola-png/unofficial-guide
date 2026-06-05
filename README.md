@@ -5,6 +5,14 @@
 > Do not write placeholder text — if a section isn't done yet, leave it blank and come back.
 > Every section below is required for submission. One-liners will not receive full credit.
 
+
+ ## Possible questions my system should be able to answer, To be removed later 
+
+When should students start applying for CS internships?
+What do students recommend putting on a CS internship resume?
+Do referrals help more than cold applications?
+What should students prepare for online assessments?
+What advice do students give for behavioral interviews?
 ---
 
 ## Domain
