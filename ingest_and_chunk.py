@@ -74,6 +74,13 @@ def clean_text(text: str) -> str:
     text = html.unescape(text)
     text = text.replace("\u00a0", " ")
     text = text.replace("\r\n", "\n").replace("\r", "\n")
+    # Remove common markdown/link markup and leftover inline HTML.
+    text = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", text)
+    text = re.sub(r"<https?://[^>]+>", " ", text)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.MULTILINE)
+    text = re.sub(r"`{1,3}", "", text)
 
     cleaned_lines: list[str] = []
     previous_line = ""
@@ -91,6 +98,15 @@ def clean_text(text: str) -> str:
             continue
 
         if any(pattern.match(line) for pattern in BOILERPLATE_LINE_PATTERNS):
+            previous_line = line
+            continue
+
+        # Drop table-heavy or link-farm lines that carry weak semantic signal.
+        if line.count("|") >= 3 or line.count("http") >= 2:
+            previous_line = line
+            continue
+
+        if any(token in line.lower() for token in ("utm_source=", "imgur.com", "<details", "</details")):
             previous_line = line
             continue
 
