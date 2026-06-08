@@ -1,5 +1,43 @@
 # The Unofficial Guide — Project 1
 
+## Milestone 5 Quick Start
+
+1. Ensure your Groq key is set in `.env`:
+
+```env
+GROQ_API_KEY=your_real_key_here
+```
+
+2. Rebuild retrieval index if needed:
+
+```bash
+python ingest_and_chunk.py
+python embed_and_retrieve.py embed --reset-collection --distance-space cosine
+```
+
+3. Ask one grounded question (retrieval + generation):
+
+```bash
+python embed_and_retrieve.py ask --q "What should students prepare for online assessments?" --top-k 5 --distance-threshold 0.5
+```
+
+4. Start terminal chat interface:
+
+```bash
+python embed_and_retrieve.py chat --top-k 5 --distance-threshold 0.5
+```
+
+5. Optional web interface (Gradio):
+
+```bash
+python embed_and_retrieve.py serve --top-k 5 --distance-threshold 0.5
+```
+
+Grounding behavior:
+- The model is prompted to answer only from retrieved chunks.
+- If context is insufficient, it is instructed to say so instead of guessing.
+- Answers include citation labels like `[S1]`, `[S2]` matching retrieved chunks.
+
 > **How to use this template:**
 > Complete each section *after* you've built and tested the corresponding part of your system.
 > Do not write placeholder text — if a section isn't done yet, leave it blank and come back.
