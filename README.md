@@ -44,6 +44,9 @@ Grounding behavior:
 
 Use this order in your video so operation is clear without narration and matches grading requirements:
 
+https://www.loom.com/share/0c83cfa8923a42378516d8227e7830e1
+
+
 1. Show the app launch command:
 
 ```bash
