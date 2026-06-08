@@ -40,6 +40,31 @@ Grounding behavior:
 - If context is insufficient, it is instructed to say so instead of guessing.
 - Answers include citation labels like `[S1]`, `[S2]` matching retrieved chunks.
 
+## Demo Recording Checklist
+
+Use this order in your video so operation is clear without narration:
+
+1. Show the app launch command:
+
+```bash
+python app.py
+```
+
+2. Open `http://localhost:7860` and run two in-domain questions:
+     - "What should a CS internship resume include?"
+     - "Do referrals help compared to cold applications?"
+
+3. Point to both outputs for each question:
+     - the grounded answer
+     - the "Retrieved from" source panel
+
+4. Run one out-of-domain question:
+     - "How do I bake sourdough bread at home?"
+
+5. Show that the system declines with:
+     - "I don't have enough information on that."
+     - plus retrieved-source transparency.
+
 > **How to use this template:**
 > Complete each section *after* you've built and tested the corresponding part of your system.
 > Do not write placeholder text — if a section isn't done yet, leave it blank and come back.
@@ -57,10 +82,9 @@ What advice do students give for behavioral interviews?
 
 ## Domain
 
-<!-- What topic or category of knowledge does your system cover?
-     Why is this knowledge valuable, and why is it hard to find through official channels?
-     Example: "Student reviews of CS professors at [university] — useful because official
-     course descriptions don't reflect teaching style, exam difficulty, or workload." -->
+This system covers unofficial advice for landing CS internships in the US as a college student.
+This knowledge is valuable because practical internship tactics are often shared in community sources (student guides, Reddit threads, open-source advice repos), not in official university pages.
+Official channels usually provide generic guidance, while this corpus contains concrete strategies about application timing, referral behavior, resume construction, and interview prep.
 
 ---
 
@@ -103,12 +127,18 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      - What your final chunk count was across all documents -->
 
 **Chunk size:**
+900 characters
 
 **Overlap:**
+180 characters
 
 **Why these choices fit your documents:**
+The documents are mostly guide-style prose and discussion text where meaning spans multiple sentences.
+Using ~900-character chunks preserves enough semantic context for embedding quality, while 180-character overlap reduces boundary-loss when a key point lands near chunk edges.
+Before chunking, the pipeline cleans boilerplate and strips common HTML/markdown artifacts to reduce noisy retrieval matches.
 
 **Final chunk count:**
+116 chunks
 
 ---
 
@@ -121,8 +151,12 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      latency, and local vs. API-hosted. -->
 
 **Model used:**
+all-MiniLM-L6-v2
 
 **Production tradeoff reflection:**
+I chose this model for strong local performance and fast embedding generation with no paid API dependency.
+For production with higher budget, I would evaluate a stronger embedding model for better semantic precision on nuanced advice queries, especially where wording differs from source text.
+The tradeoff is higher cost/latency versus fewer false negatives and less dependence on aggressive retrieval threshold tuning.
 
 ---
 
@@ -136,8 +170,12 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      the mechanism. -->
 
 **System prompt grounding instruction:**
+Generation uses a strict system instruction: answer only from provided retrieved context, do not use outside knowledge, and return "I don't have enough information on that." when evidence is insufficient.
+Context is injected as labeled source blocks ([S1], [S2], etc.) with source names and distances.
 
 **How source attribution is surfaced in the response:**
+Source attribution is programmatically appended after generation using retrieved metadata (source URL/path, chunk id, rank, distance), so attribution does not depend only on LLM behavior.
+The UI also displays a separate "Retrieved from" source panel for transparency.
 
 ---
 
@@ -149,11 +187,11 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
 
 | # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
 |---|----------|-----------------|------------------------------|-------------------|-------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | When should students start applying for CS internships? | Apply early (late summer/fall) before internship cycle; starting early helps. | Answer said students can apply as early as freshman year, with stronger readiness around sophomore year after DS&A. | Relevant | Partially accurate |
+| 2 | What should a CS internship resume include? | Projects, skills, coursework/experience, measurable impact. | Answer included skills, concise structure, career targeting, quantified achievements. | Relevant | Accurate |
+| 3 | Do referrals help compared to cold applications? | Referrals can help visibility, but students still apply broadly/quickly. | Answer stated referrals are helpful and cold outreach is viewed less favorably, but noted no direct success-rate comparison in context. | Relevant | Partially accurate |
+| 4 | What should students prepare for online assessments? | DS&A, LeetCode-style questions, timing/practice platforms. | System returned: "I don't have enough information on that." due low-confidence retrieval gate. | Partially relevant | Inaccurate |
+| 5 | What advice do students give for behavioral interviews? | STAR stories, teamwork/conflict examples, clear communication. | System returned: "I don't have enough information on that." due low-confidence retrieval gate. | Partially relevant | Inaccurate |
 
 **Retrieval quality:** Relevant / Partially relevant / Off-target  
 **Response accuracy:** Accurate / Partially accurate / Inaccurate
@@ -174,12 +212,19 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      results from an unrelated review" is an explanation. -->
 
 **Question that failed:**
+What should students prepare for online assessments?
 
 **What the system returned:**
+"I don't have enough information on that."
 
 **Root cause (tied to a specific pipeline stage):**
+The failure is mainly in retrieval-to-generation handoff policy, not total absence of relevant corpus content.
+The system currently applies a strict distance threshold (0.5). For this query, retrieved chunks had distances around 0.55-0.60, so the model was forced into refusal mode.
+This creates a false negative: evidence exists but is rejected by threshold gating.
 
 **What you would change to fix it:**
+Use adaptive thresholding (for example, allow slightly higher cutoff for low-margin queries), and/or rerank top chunks with a lightweight cross-encoder before refusal.
+I would also tune chunk cleaning and query expansion to improve similarity scores for OA-related language.
 
 ---
 
@@ -189,8 +234,12 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
      Answer both questions with at least 2–3 sentences each. -->
 
 **One way the spec helped you during implementation:**
+The planning spec narrowed implementation choices early: fixed embedding model, chunk-size target, overlap target, and explicit top-k retrieval behavior.
+That made Milestones 4 and 5 more objective because I could test against concrete thresholds and expected query types instead of vague "good answer" criteria.
 
 **One way your implementation diverged from the spec, and why:**
+The spec expected top-k retrieval to flow into generation directly, but I added a confidence gate that can refuse answers when retrieval distances are weak.
+This divergence improved grounding safety, but it also introduced false negatives on borderline-relevant queries, which is now a documented limitation.
 
 ---
 
@@ -208,11 +257,17 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
 **Instance 1**
 
 - *What I gave the AI:*
+     Planning constraints (embedding model, top-k retrieval, chunk metadata requirements) and architecture context.
 - *What it produced:*
+     Milestone 4 embedding/retrieval pipeline code with Chroma integration and CLI commands.
 - *What I changed or overrode:*
+     I switched to cosine-distance indexing with collection reset support, improved metadata normalization for source attribution, and added evaluation commands for query-based inspection.
 
 **Instance 2**
 
 - *What I gave the AI:*
+     Milestone 5 grounding requirements: context-only answering, explicit refusal behavior, and source attribution in output.
 - *What it produced:*
+     Generation wiring (Groq client, prompt template, ask/chat/serve commands) and a Gradio interface.
 - *What I changed or overrode:*
+     I hardened grounding by making refusal deterministic for low-confidence retrieval, appended source attribution programmatically, and validated behavior with in-domain and out-of-domain tests.
