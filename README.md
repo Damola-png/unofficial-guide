@@ -30,8 +30,10 @@ python embed_and_retrieve.py chat --top-k 5 --distance-threshold 0.5
 5. Optional web interface (Gradio):
 
 ```bash
-python embed_and_retrieve.py serve --top-k 5 --distance-threshold 0.5
+python app.py
 ```
+
+The web UI launches on `http://localhost:7860` and returns an answer plus a source list built from the retrieved chunks.
 
 Grounding behavior:
 - The model is prompted to answer only from retrieved chunks.

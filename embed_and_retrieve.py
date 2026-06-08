@@ -28,7 +28,7 @@ DEFAULT_EVAL_QUERIES = [
     "What advice do students give for behavioral interviews?",
 ]
 
-DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
+DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile"
 DEFAULT_MAX_CONTEXT_CHARS = 7000
 
 
@@ -290,14 +290,17 @@ def format_retrieval_context(rows: list[dict[str, Any]], max_chars: int = DEFAUL
 def build_grounding_messages(query: str, context_text: str) -> list[dict[str, str]]:
     system_prompt = (
         "You are a grounded RAG assistant for CS internship advice. "
-        "Answer ONLY using the provided retrieved context. "
-        "If the context is insufficient or missing, say you do not have enough evidence in the retrieved documents. "
-        "Do not use outside knowledge. "
-        "When making claims, cite source labels like [S1], [S2]."
+        "Answer the question using only the information in the provided documents. "
+        "If the documents do not contain enough information to answer, say: \"I don't have enough information on that.\" "
+        "Do not use outside knowledge, prior memory, or assumptions. "
+        "When making claims, cite source labels like [S1], [S2] that match the retrieved context."
     )
     user_prompt = (
         f"Question:\n{query}\n\n"
-        f"Retrieved context:\n{context_text}\n\n"
+        "Retrieved context (use only this context):\n"
+        "<<<CONTEXT_START>>>\n"
+        f"{context_text}\n"
+        "<<<CONTEXT_END>>>\n\n"
         "Write a concise answer grounded in the context and include citations."
     )
     return [
@@ -331,10 +334,25 @@ def generate_grounded_answer(
     ]
     rows_for_generation = filtered_rows if filtered_rows else rows[: min(2, len(rows))]
 
+    if not filtered_rows:
+        refusal = "I don't have enough information on that."
+        return {
+            "answer": refusal,
+            "response_text": build_response_text(refusal, rows_for_generation),
+            "retrieval": rows,
+            "used_chunks": rows_for_generation,
+            "low_confidence": True,
+        }
+
     context_text, used_rows = format_retrieval_context(rows_for_generation, max_chars=max_context_chars)
     if not context_text:
+        response_text = build_response_text(
+            "I don't have enough information on that.",
+            [],
+        )
         return {
-            "answer": "I do not have enough evidence in the retrieved documents to answer this question.",
+            "answer": "I don't have enough information on that.",
+            "response_text": response_text,
             "retrieval": rows,
             "used_chunks": [],
             "low_confidence": True,
@@ -353,8 +371,10 @@ def generate_grounded_answer(
     )
     answer = completion.choices[0].message.content or ""
 
+    answer_text = answer.strip()
     return {
-        "answer": answer.strip(),
+        "answer": answer_text,
+        "response_text": build_response_text(answer_text, used_rows),
         "retrieval": rows,
         "used_chunks": used_rows,
         "low_confidence": len(filtered_rows) == 0,
@@ -363,7 +383,7 @@ def generate_grounded_answer(
 
 def print_generation_result(result: dict[str, Any]) -> None:
     print("\n=== Grounded Answer ===")
-    print(result.get("answer", ""))
+    print(result.get("response_text", result.get("answer", "")))
 
     if result.get("low_confidence"):
         print("\n[warn] No chunks met distance threshold. Answer used fallback top chunks.")
@@ -374,6 +394,29 @@ def print_generation_result(result: dict[str, Any]) -> None:
         for row in used_chunks:
             source = row.get("source", {}).get("source", "unknown")
             print(f"[S{row.get('rank')}] source={source} distance={row.get('distance')}")
+
+
+def build_source_attribution(used_rows: list[dict[str, Any]]) -> str:
+    """Create a programmatic source list so attribution does not depend on the LLM."""
+    if not used_rows:
+        return "Sources used: none"
+
+    lines = ["Sources used:"]
+    for row in used_rows:
+        source = row.get("source", {}).get("source", "unknown")
+        rank = row.get("rank", "?")
+        chunk_id = row.get("chunk_id", "")
+        distance = row.get("distance", "")
+        lines.append(f"- [S{rank}] {source} | chunk_id={chunk_id} | distance={distance}")
+    return "\n".join(lines)
+
+
+def build_response_text(answer: str, used_rows: list[dict[str, Any]]) -> str:
+    answer_text = answer.strip()
+    attribution = build_source_attribution(used_rows)
+    if not answer_text:
+        return attribution
+    return f"{answer_text}\n\n{attribution}"
 
 
 def run_chat_interface(
@@ -449,7 +492,7 @@ def run_gradio_interface(
                 source = row.get("source", {}).get("source", "unknown")
                 source_lines.append(f"[S{row.get('rank')}] source={source} distance={row.get('distance')}")
 
-        return str(result.get("answer", "")), "\n".join(source_lines)
+        return str(result.get("response_text", result.get("answer", ""))), "\n".join(source_lines)
 
     ui = gr.Interface(
         fn=_answer,
