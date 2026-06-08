@@ -1,0 +1,85 @@
+
+===== QUERY =====
+When should students start applying for CS internships?
+
+
+=== Grounded Answer ===
+Students can start applying for CS internships as early as their first year in college [S1], [S2]. However, it's recommended to have taken or be taking Data Structures and Algorithms, typically around sophomore year, to have the necessary knowledge to start applying [S1].
+
+Sources used:
+- [S1] https://github.com/codebytere/so-you-want-an-internship | chunk_id=url::github.com/codebytere/so-you-want-an-internship::chunk_1 | distance=0.46280717849731445
+- [S2] https://github.com/codebytere/so-you-want-an-internship | chunk_id=url::github.com/codebytere/so-you-want-an-internship::chunk_0 | distance=0.48272645473480225
+- [S3] https://github.com/samwincott/Internship-Guide | chunk_id=url::github.com/samwincott/Internship-Guide::chunk_1 | distance=0.4899559020996094
+
+=== Sources Used ===
+[S1] source=https://github.com/codebytere/so-you-want-an-internship distance=0.46280717849731445
+[S2] source=https://github.com/codebytere/so-you-want-an-internship distance=0.48272645473480225
+[S3] source=https://github.com/samwincott/Internship-Guide distance=0.4899559020996094
+
+===== QUERY =====
+What should a CS internship resume include?
+
+
+=== Grounded Answer ===
+A CS internship resume should include skills such as software expertise, programming languages, and other applicable skills [S3]. It's also important to be concise and structure the resume well, providing the information recruiters want [S5]. Additionally, the resume should target the career, in this case, a software engineering internship, and not include irrelevant information [S5]. It's recommended to ditch the "objective" section unless right out of college or transitioning to a new role [S3, S5].
+
+Sources used:
+- [S1] https://github.com/samwincott/Internship-Guide | chunk_id=url::github.com/samwincott/Internship-Guide::chunk_0 | distance=0.4090324640274048
+- [S2] https://github.com/SimplifyJobs/Summer2026-Internships | chunk_id=url::github.com/SimplifyJobs/Summer2026-Internships::chunk_15 | distance=0.41210681200027466
+- [S3] https://github.com/codebytere/so-you-want-an-internship | chunk_id=url::github.com/codebytere/so-you-want-an-internship::chunk_6 | distance=0.42935264110565186
+- [S4] https://github.com/codebytere/so-you-want-an-internship | chunk_id=url::github.com/codebytere/so-you-want-an-internship::chunk_0 | distance=0.43090641498565674
+- [S5] https://github.com/codebytere/so-you-want-an-internship | chunk_id=url::github.com/codebytere/so-you-want-an-internship::chunk_5 | distance=0.447457492351532
+
+=== Sources Used ===
+[S1] source=https://github.com/samwincott/Internship-Guide distance=0.4090324640274048
+[S2] source=https://github.com/SimplifyJobs/Summer2026-Internships distance=0.41210681200027466
+[S3] source=https://github.com/codebytere/so-you-want-an-internship distance=0.42935264110565186
+[S4] source=https://github.com/codebytere/so-you-want-an-internship distance=0.43090641498565674
+[S5] source=https://github.com/codebytere/so-you-want-an-internship distance=0.447457492351532
+
+===== QUERY =====
+Do referrals help compared to cold applications?
+
+
+=== Grounded Answer ===
+Referrals are implied to be more effective than cold applications, as the context suggests being grateful and taking a referrer for coffee, implying a personal connection is beneficial [S1]. In contrast, cold calling is described as "spammy" [S1], suggesting it may be less effective. However, the context does not provide a direct comparison of the two methods' success rates.
+
+Sources used:
+- [S1] https://github.com/cassidoo/getting-a-gig | chunk_id=url::github.com/cassidoo/getting-a-gig::chunk_27 | distance=0.48986876010894775
+
+=== Sources Used ===
+[S1] source=https://github.com/cassidoo/getting-a-gig distance=0.48986876010894775
+
+===== QUERY =====
+What should students prepare for online assessments?
+
+
+=== Grounded Answer ===
+I don't have enough information on that.
+
+Sources used:
+- [S1] https://wiki.thesoda.io/guides/internships | chunk_id=url::wiki.thesoda.io/guides/internships::chunk_2 | distance=0.5499773621559143
+- [S2] https://github.com/cassidoo/getting-a-gig | chunk_id=url::github.com/cassidoo/getting-a-gig::chunk_12 | distance=0.5967321395874023
+
+[warn] No chunks met distance threshold. Answer used fallback top chunks.
+
+=== Sources Used ===
+[S1] source=https://wiki.thesoda.io/guides/internships distance=0.5499773621559143
+[S2] source=https://github.com/cassidoo/getting-a-gig distance=0.5967321395874023
+
+===== QUERY =====
+What advice do students give for behavioral interviews?
+
+
+=== Grounded Answer ===
+I don't have enough information on that.
+
+Sources used:
+- [S1] https://wiki.thesoda.io/guides/internships | chunk_id=url::wiki.thesoda.io/guides/internships::chunk_5 | distance=0.5177600383758545
+- [S2] https://github.com/workattech/get-a-software-engineering-job | chunk_id=url::github.com/workattech/get-a-software-engineering-job::chunk_3 | distance=0.5815713405609131
+
+[warn] No chunks met distance threshold. Answer used fallback top chunks.
+
+=== Sources Used ===
+[S1] source=https://wiki.thesoda.io/guides/internships distance=0.5177600383758545
+[S2] source=https://github.com/workattech/get-a-software-engineering-job distance=0.5815713405609131

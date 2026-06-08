@@ -40,9 +40,9 @@ Grounding behavior:
 - If context is insufficient, it is instructed to say so instead of guessing.
 - Answers include citation labels like `[S1]`, `[S2]` matching retrieved chunks.
 
-## Demo Recording Checklist
+## Demo Recording Checklist (3-5 Minutes)
 
-Use this order in your video so operation is clear without narration:
+Use this order in your video so operation is clear without narration and matches grading requirements:
 
 1. Show the app launch command:
 
@@ -50,34 +50,27 @@ Use this order in your video so operation is clear without narration:
 python app.py
 ```
 
-2. Open `http://localhost:7860` and run two in-domain questions:
-     - "What should a CS internship resume include?"
-     - "Do referrals help compared to cold applications?"
+2. Open `http://localhost:7860` and run three questions total:
+     - Query A (strong success): "What should a CS internship resume include?"
+     - Query B (also in-domain): "Do referrals help compared to cold applications?"
+     - Query C (struggle/failure): "What should students prepare for online assessments?"
 
-3. Point to both outputs for each question:
+3. For each query, point to both outputs:
      - the grounded answer
-     - the "Retrieved from" source panel
+     - the "Retrieved from" source panel with source citations
 
-4. Run one out-of-domain question:
+4. Narrate failure behavior on Query C:
+     - explain that the system returned "I don't have enough information on that."
+     - explain why: strict distance threshold gating (false negative risk)
+
+5. Optional extra refusal test (out-of-domain):
      - "How do I bake sourdough bread at home?"
 
-5. Show that the system declines with:
-     - "I don't have enough information on that."
-     - plus retrieved-source transparency.
+6. Briefly walk through the Evaluation Report section in this README:
+     - show the 5-question table
+     - point out at least one inaccurate/partially accurate result
+     - show Failure Case Analysis and suggested fix.
 
-> **How to use this template:**
-> Complete each section *after* you've built and tested the corresponding part of your system.
-> Do not write placeholder text — if a section isn't done yet, leave it blank and come back.
-> Every section below is required for submission. One-liners will not receive full credit.
-
-
- ## Possible questions my system should be able to answer, To be removed later 
-
-When should students start applying for CS internships?
-What do students recommend putting on a CS internship resume?
-Do referrals help more than cold applications?
-What should students prepare for online assessments?
-What advice do students give for behavioral interviews?
 ---
 
 ## Domain
@@ -89,10 +82,6 @@ Official channels usually provide generic guidance, while this corpus contains c
 ---
 
 ## Document Sources
-
-<!-- List every source you collected documents from.
-     Be specific: include URLs, subreddit names, forum thread titles, or file names.
-     Aim for variety — sources that together cover different subtopics or perspectives. -->
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
@@ -118,14 +107,6 @@ My main aim for this project is to focus on unofficial advice on getting a Compu
 
 ## Chunking Strategy
 
-
-<!-- Describe your chunking approach with enough specificity that someone else could reproduce it.
-     Include:
-     - Chunk size (characters or tokens) and why that size fits your documents
-     - Overlap size and why (or why not) you used overlap
-     - Any preprocessing you did before chunking (e.g., stripping HTML, removing headers)
-     - What your final chunk count was across all documents -->
-
 **Chunk size:**
 900 characters
 
@@ -144,12 +125,6 @@ Before chunking, the pipeline cleans boilerplate and strips common HTML/markdown
 
 ## Embedding Model
 
-<!-- Name the embedding model you used and explain your choice.
-     Then answer: if you were deploying this system for real users and cost wasn't a constraint,
-     what tradeoffs would you weigh in choosing a different model?
-     Consider: context length limits, multilingual support, accuracy on domain-specific text,
-     latency, and local vs. API-hosted. -->
-
 **Model used:**
 all-MiniLM-L6-v2
 
@@ -161,13 +136,6 @@ The tradeoff is higher cost/latency versus fewer false negatives and less depend
 ---
 
 ## Grounded Generation
-
-<!-- Explain how your system enforces grounding — how does it prevent the LLM from answering
-     beyond the retrieved documents?
-     Describe both your system prompt (what instruction you gave the model) and any structural
-     choices (e.g., how you formatted the context, whether you filtered low-relevance chunks).
-     Do not just say "I told it to use the documents" — show the actual instruction or explain
-     the mechanism. -->
 
 **System prompt grounding instruction:**
 Generation uses a strict system instruction: answer only from provided retrieved context, do not use outside knowledge, and return "I don't have enough information on that." when evidence is insufficient.
@@ -181,17 +149,13 @@ The UI also displays a separate "Retrieved from" source panel for transparency.
 
 ## Evaluation Report
 
-<!-- Run your 5 test questions from planning.md through your system and record the results.
-     Be honest — a partially accurate or inaccurate result that you explain well is more
-     valuable than a suspiciously perfect result. -->
-
 | # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
 |---|----------|-----------------|------------------------------|-------------------|-------------------|
-| 1 | When should students start applying for CS internships? | Apply early (late summer/fall) before internship cycle; starting early helps. | Answer said students can apply as early as freshman year, with stronger readiness around sophomore year after DS&A. | Relevant | Partially accurate |
-| 2 | What should a CS internship resume include? | Projects, skills, coursework/experience, measurable impact. | Answer included skills, concise structure, career targeting, quantified achievements. | Relevant | Accurate |
-| 3 | Do referrals help compared to cold applications? | Referrals can help visibility, but students still apply broadly/quickly. | Answer stated referrals are helpful and cold outreach is viewed less favorably, but noted no direct success-rate comparison in context. | Relevant | Partially accurate |
-| 4 | What should students prepare for online assessments? | DS&A, LeetCode-style questions, timing/practice platforms. | System returned: "I don't have enough information on that." due low-confidence retrieval gate. | Partially relevant | Inaccurate |
-| 5 | What advice do students give for behavioral interviews? | STAR stories, teamwork/conflict examples, clear communication. | System returned: "I don't have enough information on that." due low-confidence retrieval gate. | Partially relevant | Inaccurate |
+| 1 | When should students start applying for CS internships? | Students often recommend applying early, commonly during late summer or fall before the internship year. | "Students can start applying for CS internships as early as their first year in college [S1], [S2]. However, it's recommended to have taken or be taking Data Structures and Algorithms, typically around sophomore year, to have the necessary knowledge to start applying [S1]." | Relevant | partially accurate |
+| 2 | What should a CS internship resume include? | Projects, technical skills, relevant coursework, previous experience if available, and measurable impact. | "A CS internship resume should include skills such as software expertise, programming languages, and other applicable skills [S3]. It's also important to be concise and structure the resume well, providing the information recruiters want [S5]. Additionally, the resume should target the career... and not include irrelevant information [S5]." | Relevant | accurate |
+| 3 | Do referrals help compared to cold applications? | Referrals may help get attention, but students still recommend applying broadly and quickly. | "Referrals are implied to be more effective than cold applications... In contrast, cold calling is described as 'spammy'... However, the context does not provide a direct comparison of the two methods' success rates." | Relevant | partially accurate |
+| 4 | What should students prepare for online assessments? | Data structures, algorithms, LeetCode-style questions, time management, and practice with coding platforms. | "I don't have enough information on that." | Partially relevant | inaccurate |
+| 5 | What advice do students give for behavioral interviews? | Prepare clear stories using a structure like STAR, explain teamwork/conflict examples, and avoid sounding overly scripted. | "I don't have enough information on that." | Partially relevant | inaccurate |
 
 **Retrieval quality:** Relevant / Partially relevant / Off-target  
 **Response accuracy:** Accurate / Partially accurate / Inaccurate
@@ -199,17 +163,6 @@ The UI also displays a separate "Retrieved from" source panel for transparency.
 ---
 
 ## Failure Case Analysis
-
-<!-- Identify at least one question where retrieval or generation did not work as expected.
-     Write a specific explanation of *why* it failed, tied to a part of the pipeline.
-
-     "The answer was wrong" is not an explanation.
-
-     "The relevant information was split across a chunk boundary, so retrieval returned
-     only half the context — the model didn't have enough to answer correctly" is an explanation.
-
-     "The embedding model treated the professor's nickname as out-of-vocabulary and returned
-     results from an unrelated review" is an explanation. -->
 
 **Question that failed:**
 What should students prepare for online assessments?
@@ -230,9 +183,6 @@ I would also tune chunk cleaning and query expansion to improve similarity score
 
 ## Spec Reflection
 
-<!-- Reflect on how planning.md shaped your implementation.
-     Answer both questions with at least 2–3 sentences each. -->
-
 **One way the spec helped you during implementation:**
 The planning spec narrowed implementation choices early: fixed embedding model, chunk-size target, overlap target, and explicit top-k retrieval behavior.
 That made Milestones 4 and 5 more objective because I could test against concrete thresholds and expected query types instead of vague "good answer" criteria.
@@ -244,16 +194,6 @@ This divergence improved grounding safety, but it also introduced false negative
 ---
 
 ## AI Usage
-
-<!-- Describe at least 2 specific instances where you used an AI tool during this project.
-     For each: what did you give the AI as input, what did it produce, and what did you
-     change, override, or direct differently?
-
-     "I used Claude to help me code" is not sufficient.
-     "I gave Claude my Chunking Strategy section from planning.md and asked it to implement
-     chunk_text(). It returned a function using a fixed character split. I overrode the
-     chunk size from 500 to 200 because my documents are short reviews, not long guides." -->
-
 **Instance 1**
 
 - *What I gave the AI:*
